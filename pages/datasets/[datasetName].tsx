@@ -35,7 +35,7 @@ export default function DatasetPage({
         <main className="max-w-5xl px-2 prose mx-auto my-8 pb-8 prose-thead:border-b-4 prose-table:max-w-5xl prose-table:overflow-scroll prose-thead:overflow-scroll prose-tbody:overflow-scroll prose-thead:pb-2 prose-thead:border-zinc-900 prose-th:uppercase prose-th:text-left prose-th:font-light prose-th:text-xs prose-a:no-underline">
           <Breadcrumbs links={[{ title: dataset.name, href: '' }]} />
           <h1 className="uppercase mb-0 mt-16">{dataset.name}</h1>
-          <table className="w-full my-10 mb-8 hidden md:table">
+          {/* <table className="w-full my-10 mb-8 hidden md:table">
             <thead className="border-b-4 pb-2 border-zinc-900">
               <tr>
                 <th className="uppercase text-left font-normal text-xs pb-3">
@@ -49,9 +49,9 @@ export default function DatasetPage({
             <tbody>
               <DesktopItem key={dataset.name} dataset={dataset} />
             </tbody>
-          </table>
+          </table> */}
 
-          {dataset.readme && (
+          {/* {dataset.readme && (
             <>
               {dataset.readme && (
                 <ReactMarkdown
@@ -65,7 +65,7 @@ export default function DatasetPage({
                 </ReactMarkdown>
               )}
             </>
-          )}
+          )} */}
 
           <h2 className="mb-0 mt-10">Files</h2>
           <div className="inline-block min-w-full py-2 align-middle">
@@ -136,44 +136,44 @@ export default function DatasetPage({
   );
 }
 
-export function DesktopItem({ dataset }: { dataset: Dataset }) {
-  return (
-    <>
-      {dataset.articles.map((article, index) => (
-        <tr
-          key={article.url}
-          className={`${
-            index === dataset.articles.length - 1 ? 'border-b' : ''
-          } border-zinc-400`}
-        >
-          <td>
-            <a
-              className="py-8 font-bold hover:underline pr-2"
-              href={article.url}
-            >
-              {article.title}
-            </a>
-          </td>
-          <td className="py-8 font-light text-[14px] min-w-[138px] font-mono text-[#999]">
-            {format(article.date).includes('years')
-              ? new Date(article.date).toLocaleString('en-US', options)
-              : format(article.date)}
-          </td>
-          <td className="py-8 text-end">
-            {index === 0 && (
-              <a
-                className="ml-auto border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
-                href={dataset.url}
-              >
-                info
-              </a>
-            )}
-          </td>
-        </tr>
-      ))}
-    </>
-  );
-}
+// export function DesktopItem({ dataset }: { dataset: Dataset }) {
+//   return (
+//     <>
+//       {dataset.articles.map((article, index) => (
+//         <tr
+//           key={article.url}
+//           className={`${
+//             index === dataset.articles.length - 1 ? 'border-b' : ''
+//           } border-zinc-400`}
+//         >
+//           <td>
+//             <a
+//               className="py-8 font-bold hover:underline pr-2"
+//               href={article.url}
+//             >
+//               {article.title}
+//             </a>
+//           </td>
+//           <td className="py-8 font-light text-[14px] min-w-[138px] font-mono text-[#999]">
+//             {format(article.date).includes('years')
+//               ? new Date(article.date).toLocaleString('en-US', options)
+//               : format(article.date)}
+//           </td>
+//           <td className="py-8 text-end">
+//             {index === 0 && (
+//               <a
+//                 className="ml-auto border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
+//                 href={dataset.url}
+//               >
+//                 info
+//               </a>
+//             )}
+//           </td>
+//         </tr>
+//       ))}
+//     </>
+//   );
+// }
 
 export async function getStaticPaths() {
   const datasetsFile = path.join(process.cwd(), 'datasets.json');
@@ -198,25 +198,25 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     (_dataset) => _dataset.name === params?.datasetName
   );
   const github_pat = getConfig().serverRuntimeConfig.github_pat;
-  const readmes = await Promise.all(
-    ['/README.md', '/readme.md', '/Readme.md'].map(
-      async (readme) =>
-        await getProjectReadme(
-          'fivethirtyeight',
-          'data',
-          'master',
-          dataset?.name + readme,
-          github_pat
-        )
-    )
-  );
-  const readme = readmes.find((item) => item !== null);
-  if (!readme) console.log('Readme not found for ' + dataset?.name);
+  // const readmes = await Promise.all(
+  //   ['/README.md', '/readme.md', '/Readme.md'].map(
+  //     async (readme) =>
+  //       await getProjectReadme(
+  //         'fivethirtyeight',
+  //         'data',
+  //         'master',
+  //         dataset?.name + readme,
+  //         github_pat
+  //       )
+  //   )
+  // );
+  // const readme = readmes.find((item) => item !== null);
+  // if (!readme) console.log('Readme not found for ' + dataset?.name);
   return {
     props: {
       dataset: {
         ...dataset,
-        readme,
+//        readme,
         files: dataset && dataset.files ? dataset.files : null,
       },
     },

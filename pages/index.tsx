@@ -5,6 +5,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { NextSeo } from 'next-seo';
 import Layout from '@/components/Layout';
+import { FlatUiTable } from '@portaljs/components';
+
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -127,21 +130,27 @@ export async function getStaticProps() {
 export default function Home({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
-      <NextSeo title="FiveThirtyEight tribute by PortalJS" />
+      <NextSeo title="Data Portal for SLE" />
       <Layout>
       <main
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >
         <div>
           <h1 className="text-[40px] font-bold text-zinc-800 text-center">
-            Our Data
+            SLE Profiling
           </h1>
           <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
-            We’re sharing the data and code behind some of our articles and
-            graphics. We hope you’ll use it to check our work and to create
-            stories and visualizations of&nbsp;your&nbsp;own.
+            some abstract some abstract some abstract some abstract some abstract some abstract some abstract
           </p>
         </div>
+        <br/><br/>
+        <div>
+          <p className="max-w-[600px] text-[25px] text-center">
+            Metadata
+          </p>
+        </div>
+        <FlatUiTable url={"anno_cut.csv"} />
+          
         <article className="w-full px-2 md:hidden py-4">
           {datasets.map((dataset) => (
             <MobileItem key={dataset.name} dataset={dataset} />
@@ -166,8 +175,8 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
               <DesktopItem key={dataset.name} dataset={dataset} />
             ))}
           </tbody>
-        </table>
-        <p className="text-[13px] py-8">
+          </table>     
+        {/* <p className="text-[13px] py-8">
           Unless otherwise noted, our data sets are available under the{' '}
           <a
             className="text-blue-400 hover:underline"
@@ -190,7 +199,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
             let us know
           </a>
           .
-        </p>
+          </p>   */}
       </main>
       </Layout>
     </>
