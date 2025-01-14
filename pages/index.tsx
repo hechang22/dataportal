@@ -150,6 +150,16 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           </p>
         </div>
         <FlatUiTable url={"anno_cut.csv"} />
+        <br/><br/> 
+        <div>
+          <p className="max-w-[600px] text-[25px] text-center">
+            Detailed Metadata for Patients
+          </p>
+          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
+            including organ involvement, drug response, timepoint
+          </p>  
+        </div>
+        <FlatUiTable url={"sub.csv"} />
           
         <article className="w-full px-2 md:hidden py-4">
           {datasets.map((dataset) => (
