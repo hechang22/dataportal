@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               width="100"
               height="25"
               alt="LuLab"
-              src="lulablogo.png"
+              src="logo.png"
             />{' '}
             {/* <span className="-mb-0.5 text-[#3c3c3c]">replica</span> */}
           </h1>

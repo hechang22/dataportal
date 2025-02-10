@@ -136,30 +136,41 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >
         <div>
-          <h1 className="text-[40px] font-bold text-zinc-800 text-center">
-            SLE Profiling
+          <h1 className="text-[23px] font-bold text-zinc-800 text-center">
+            Cell-specific multi-omics landscape for systemic lupus erythematosus
           </h1>
-          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
-            some abstract some abstract some abstract some abstract some abstract some abstract some abstract
+          <p className="max-w-[1000px] text-[18px] text-center text-[#6d6f71]">
+            Total RNA sequencing of 30 cellular and extracellular components of blood in systemic lupus erythematosus.
           </p>
         </div>
+          
+        <br/><br/>  
+        <br/><br/>  
+        <img
+          width="700"
+          height="700"
+          alt="summary"
+          src="fig1.png"
+        />{' '}  
+
+        <br/><br/>  
         <br/><br/>
         <div>
-          <p className="max-w-[600px] text-[25px] text-center">
+          <p className="max-w-[600px] text-[20px] text-center">
             Metadata
           </p>
         </div>
-        <FlatUiTable url={"anno_cut.csv"} />
+        <FlatUiTable url={"anno_cut_2.csv"} />
         <br/><br/> 
         <div>
-          <p className="max-w-[600px] text-[25px] text-center">
+          <p className="max-w-[600px] text-[20px] text-center">
             Detailed Metadata for Patients
           </p>
           <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
             including organ involvement, drug response, timepoint
           </p>  
         </div>
-        <FlatUiTable url={"sub.csv"} />
+        <FlatUiTable url={"sub_cut.csv"} />
           
         <article className="w-full px-2 md:hidden py-4">
           {datasets.map((dataset) => (
