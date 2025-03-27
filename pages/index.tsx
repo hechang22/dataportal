@@ -152,7 +152,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           width="700"
           height="700"
           alt="summary"
-          src="fig1.png"
+          src="figure1.jpg"
         />{' '}  
 <ToggleContent
   button1Text="Sample Info"
