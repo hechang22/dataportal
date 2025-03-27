@@ -180,7 +180,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
             dsRIP
           </p>  
         </div>
-          <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal.csv"} />
+          <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal_2.csv"} />
           <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
             m6A-seq
           </p>  

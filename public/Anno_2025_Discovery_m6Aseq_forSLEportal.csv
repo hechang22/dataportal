@@ -1,9 +1,9 @@
-"id","sample","cell_type","sample-cell","group","cell","lineage","Group","patient","Age","Gender","SLEDAI","Treatment","Treatment Response","Timepoint"
-"L1-Neu-input_BC11","HD25","NEU","HD25-NEU","Healthy_control","Neutrophil","Neutrophil","HD","P16",30,"female","-","-","-","-"
-"L2-Neu-m6A_BC11","HD25","NEU","HD25-NEU","Healthy_control","Neutrophil","Neutrophil","HD","P16",30,"female","-","-","-","-"
-"L1-Neu-input_BC12","HD27","NEU","HD27-NEU","Healthy_control","Neutrophil","Neutrophil","HD","P18",37,"female","-","-","-","-"
-"L1-Neu-m6A_BC12","HD27","NEU","HD27-NEU","Healthy_control","Neutrophil","Neutrophil","HD","P18",37,"female","-","-","-","-"
-"L1-Neu-input_BC13","S507","NEU","S507-NEU","HDA","Neutrophil","Neutrophil","SLE-naïve","P60",35,"female","10","-","-","-"
-"L2-Neu-m6A_BC13","S507","NEU","S507-NEU","HDA","Neutrophil","Neutrophil","SLE-naïve","P60",35,"female","10","-","-","-"
-"L1-Neu-input_BC14","S524","NEU","S524-NEU","HDA","Neutrophil","Neutrophil","SLE-naïve","P61",48,"female","12","-","-","-"
-"L2-Neu-m6A_BC14","S524","NEU","S524-NEU","HDA","Neutrophil","Neutrophil","SLE-naïve","P61",48,"female","12","-","-","-"
+id,sample,cell_type,sample-cell,group,cell,lineage,Group,patient,Age,Gender,SLEDAI,Treatment,Treatment Response,Timepoint
+L1-Neu-input_BC11,HD25,NEU,HD25-NEU,Healthy_control,Neutrophil,Neutrophil,HD,P16,30,female,-,-,-,-
+L2-Neu-m6A_BC11,HD25,NEU,HD25-NEU,Healthy_control,Neutrophil,Neutrophil,HD,P16,30,female,-,-,-,-
+L1-Neu-input_BC12,HD27,NEU,HD27-NEU,Healthy_control,Neutrophil,Neutrophil,HD,P18,37,female,-,-,-,-
+L1-Neu-m6A_BC12,HD27,NEU,HD27-NEU,Healthy_control,Neutrophil,Neutrophil,HD,P18,37,female,-,-,-,-
+L1-Neu-input_BC13,S507,NEU,S507-NEU,HDA,Neutrophil,Neutrophil,SLE-naive,P60,35,female,10,-,-,-
+L2-Neu-m6A_BC13,S507,NEU,S507-NEU,HDA,Neutrophil,Neutrophil,SLE-naive,P60,35,female,10,-,-,-
+L1-Neu-input_BC14,S524,NEU,S524-NEU,HDA,Neutrophil,Neutrophil,SLE-naive,P61,48,female,12,-,-,-
+L2-Neu-m6A_BC14,S524,NEU,S524-NEU,HDA,Neutrophil,Neutrophil,SLE-naive,P61,48,female,12,-,-,-
