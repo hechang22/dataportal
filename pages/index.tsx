@@ -6,8 +6,10 @@ import path from 'path';
 import { NextSeo } from 'next-seo';
 import Layout from '@/components/Layout';
 import { FlatUiTable } from '@portaljs/components';
-
-
+import ToggleContent from '@/components/ToggleContent';
+import SelectiveContent from '@/components/SelectiveContent';
+import { ChartPieIcon, TableCellsIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -152,40 +154,43 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           alt="summary"
           src="fig1.png"
         />{' '}  
+<ToggleContent
+  button1Text="Sample Info"
+  button2Text="Data Metadata"
+  content1={
+    <div className="prose max-w-none">
+      <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} />
+    </div>
+  }
+  content2={
+    <div className="space-y-4">
+      <div className="max-w-4xl mx-auto">
+        <SelectiveContent
+          options={[
+            {
+              value: 'total',
+              label: 'Total-RNA-seq',
+              content: <FlatUiTable url={"Anno_2025_Discovery_filter_2914_forSLEportal.csv"} />
+            },
+            {
+              value: 'm6A',
+              label: 'm6A-seq',
+              content: <FlatUiTable url={"Anno_2025_Discovery_m6Aseq_forSLEportal.csv"} />
+            },
+            {
+              value: 'dsRIP',
+              label: 'dsRIP',
+              content: <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal_2.csv"} />
+            }
+          ]}
+          buttonClassName="w-full bg-gray-100 hover:bg-gray-200 rounded-lg py-2 px-4"
+          contentClassName="mt-4"
+        />
+      </div>
+    </div>
+  }
+/>
 
-        <br/><br/>  
-        <br/><br/>
-        <div>
-          <p className="max-w-[600px] text-[20px] text-center">
-            Discovery Metadata
-          </p>
-        </div>
-        <FlatUiTable url={"Anno_2025_Discovery_filter_2914_forSLEportal.csv"} />
-        <br/><br/> 
-        <div>
-          <p className="max-w-[600px] text-[20px] text-center">
-            Discovery Sample Info
-          </p>
-          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
-            including organ involvement, drug response, timepoint
-          </p>  
-        </div>
-          <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} />
-        <br/><br/> 
-        <div>
-          <p className="max-w-[600px] text-[20px] text-center">
-          Discovery metadata in dsRIP & m6A-seq 
-          </p>
-          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
-            dsRIP
-          </p>  
-        </div>
-          <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal_2.csv"} />
-          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
-            m6A-seq
-          </p>  
-        <FlatUiTable url={"Anno_2025_Discovery_m6Aseq_forSLEportal.csv"} />
-          
         <article className="w-full px-2 md:hidden py-4">
           {datasets.map((dataset) => (
             <MobileItem key={dataset.name} dataset={dataset} />
