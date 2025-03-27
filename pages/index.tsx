@@ -157,20 +157,34 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
         <br/><br/>
         <div>
           <p className="max-w-[600px] text-[20px] text-center">
-            Metadata
+            Discovery Metadata
           </p>
         </div>
-        <FlatUiTable url={"anno_cut_2.csv"} />
+        <FlatUiTable url={"Anno_2025_Discovery_filter_2914_forSLEportal.csv"} />
         <br/><br/> 
         <div>
           <p className="max-w-[600px] text-[20px] text-center">
-            Detailed Metadata for Patients
+            Discovery Sample Info
           </p>
           <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
             including organ involvement, drug response, timepoint
           </p>  
         </div>
-        <FlatUiTable url={"sub_cut.csv"} />
+          <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} />
+        <br/><br/> 
+        <div>
+          <p className="max-w-[600px] text-[20px] text-center">
+          Discovery metadata in dsRIP & m6A-seq 
+          </p>
+          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
+            dsRIP
+          </p>  
+        </div>
+          <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal.csv"} />
+          <p className="max-w-[600px] text-[17px] text-center text-[#6d6f71]">
+            m6A-seq
+          </p>  
+        <FlatUiTable url={"Anno_2025_Discovery_m6Aseq_forSLEportal.csv"} />
           
         <article className="w-full px-2 md:hidden py-4">
           {datasets.map((dataset) => (
