@@ -159,7 +159,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   button2Text="Data Metadata"
   content1={
     <div className="prose max-w-none">
-      <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} />
+      <FlatUiTable url={"sample_info_update_2025_5.csv"} />
     </div>
   }
   content2={
