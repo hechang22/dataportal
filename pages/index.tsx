@@ -155,14 +155,17 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           src="figure1.jpg"
         />{' '}  
 <ToggleContent
-  button1Text="Sample Info"
-  button2Text="Data Metadata"
-  content1={
-    <div className="prose max-w-none">
-      <FlatUiTable url={"sample_info_update_2025_5.csv"} />
+  items={[
+    {
+    text: 'Sample Info', 
+    content: 
+    <div className="prose max-w-none"> 
+      <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} /> 
     </div>
-  }
-  content2={
+    },
+    {
+    text: 'Cellular Metadata', 
+    content: 
     <div className="space-y-4">
       <div className="max-w-4xl mx-auto">
         <SelectiveContent
@@ -170,7 +173,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
             {
               value: 'total',
               label: 'Total-RNA-seq',
-              content: <FlatUiTable url={"Anno_2025_Discovery_filter_2914_forSLEportal.csv"} />
+              content: <FlatUiTable url={"cellular-metadata-520.csv"} />
             },
             {
               value: 'm6A',
@@ -188,7 +191,15 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
         />
       </div>
     </div>
+  },
+  {
+  text: 'Cell-free Metadata',
+  content: 
+  <div className="prose max-w-none"> 
+    <FlatUiTable url={"cf-metadata-520.csv"} /> 
+  </div>
   }
+  ]}
 />
 
         <article className="w-full px-2 md:hidden py-4">
