@@ -161,7 +161,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
     text: 'Sample Info', 
     content: 
     <div className="prose max-w-none"> 
-      <FlatUiTable url={"Discovery-sample-info-forSLEportal.csv"} /> 
+      <FlatUiTable url={"sample_info_oct21.csv"} /> 
     </div>
     },
     {
@@ -174,7 +174,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
             {
               value: 'total',
               label: 'Total-RNA-seq',
-              content: <FlatUiTable url={"Anno_2025_Cell_3018.csv"} />
+              content: <FlatUiTable url={"Anno_2025_Cell_3018_oct21.csv"} />
             },
             {
               value: 'm6A',
@@ -197,7 +197,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   text: 'Cell-free Metadata',
   content: 
   <div className="prose max-w-none"> 
-    <FlatUiTable url={"Anno_2025_Cellfree_419.csv"} /> 
+    <FlatUiTable url={"Anno_2025_Cellfree_419_oct21.csv"} /> 
   </div>
   }
   ]}
