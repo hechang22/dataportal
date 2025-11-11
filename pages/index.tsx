@@ -201,33 +201,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   </div>
   }
   ]}
-/>
-
-        <article className="w-full px-2 md:hidden py-4">
-          {datasets.map((dataset) => (
-            <MobileItem key={dataset.name} dataset={dataset} />
-          ))}
-        </article>
-        <table className="w-full mt-10 mb-4 hidden md:table">
-          <thead className="border-b-4 pb-2 border-zinc-900">
-            <tr>
-              <th className="uppercase text-left font-normal text-xs pb-3">
-                data set
-              </th>
-              <th className="uppercase text-left font-normal text-xs pb-3">
-                related content
-              </th>
-              <th className="uppercase text-left font-normal text-xs pb-3">
-                last updated
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {datasets.map((dataset) => (
-              <DesktopItem key={dataset.name} dataset={dataset} />
-            ))}
-          </tbody>
-          </table>     
+/>  
         {/* <p className="text-[13px] py-8">
           Unless otherwise noted, our data sets are available under the{' '}
           <a
