@@ -140,7 +140,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
       >
         <div>
           <h1 className="text-[23px] font-bold text-zinc-800 text-center">
-            Cell-specific multi-omics landscape for systemic lupus erythematosus
+            Cell-specific dsRNAome landscape for systemic lupus erythematosus
           </h1>
           <p className="max-w-[1000px] text-[18px] text-center text-[#6d6f71]">
             Total RNA sequencing of 30 cellular and extracellular components of blood in systemic lupus erythematosus.
