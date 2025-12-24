@@ -147,6 +147,7 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           </p>
         </div>
           
+{/*       
         <br/><br/>  
         <br/><br/>  
         <img
@@ -155,6 +156,8 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
           alt="summary"
           src="figure1.jpg"
         />{' '}  
+*/}
+
 <ToggleContent
   items={[
     {
