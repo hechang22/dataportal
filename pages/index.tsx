@@ -11,6 +11,7 @@ import SelectiveContent from '@/components/SelectiveContent';
 import { ChartPieIcon, TableCellsIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { text } from 'stream/consumers';
+import DSrnaSearch from '@/components/DSrnaSearch';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -205,6 +206,20 @@ export default function Home({ datasets }: { datasets: Dataset[] }) {
   }
   ]}
 />  
+
+<ToggleContent
+  items={[
+    {
+      text: 'dsRNA Analysis', // 新增的 dsRNA 模块
+      content: <DSrnaSearch />
+    },
+    {
+      text: 'Sample Info', 
+      content: <div className="prose max-w-none"><FlatUiTable url={"sample_info_oct21.csv"} /></div>
+    },
+  ]}
+/>
+
         {/* <p className="text-[13px] py-8">
           Unless otherwise noted, our data sets are available under the{' '}
           <a
