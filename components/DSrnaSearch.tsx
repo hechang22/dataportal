@@ -24,7 +24,7 @@ export default function DSrnaSearch() {
           <label className="text-sm font-bold text-gray-700">Gene Symbol</label>
           <input 
             className="border p-2 rounded w-64 focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="e.g. WASF2 (Leave empty for all DEG)"
+            placeholder="(Leave empty for all DEG)"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
           />
@@ -82,7 +82,7 @@ export default function DSrnaSearch() {
         </table>
         {data.length === 0 && !loading && (
           <div className="text-center py-10 text-gray-400">
-            No results found. {symbol === '' ? 'No significantly different dsRNAs (FDR < 0.05) in this cell type.' : ''}
+            No results found. {symbol === '' ? 'No content.' : ''}
           </div>
         )}
       </div>
