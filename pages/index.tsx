@@ -34,7 +34,7 @@ export default function Home() {
       image: '/figures/ncRNA.png'
     },
     {
-      id: 'dsEER', // 这里可以先做一个 dsRNA 的入口，内部再选 dsEER/dsRIP
+      id: 'dsEER',
       title: 'dsRNA',
       description: 'Differential dsRNA landscape including dsEER and dsRIP',
       image: '/figures/dsRNA.jpg'
