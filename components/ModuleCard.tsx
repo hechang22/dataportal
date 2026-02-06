@@ -1,5 +1,14 @@
 // components/ModuleCard.tsx
-export default function ModuleCard({ title, description, image, onExplore }) {
+
+// 定义属性的类型接口
+interface ModuleCardProps {
+  title: string;
+  description: string;
+  image: string;
+  onExplore: () => void; // 表示这是一个不返回任何值的函数
+}
+
+export default function ModuleCard({ title, description, image, onExplore }: ModuleCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center transition-all hover:shadow-md hover:-translate-y-1">
       {/* 模块图片 */}

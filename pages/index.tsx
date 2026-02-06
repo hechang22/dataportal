@@ -16,8 +16,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
 
-  // 状态：null 表示首页卡片流，'mRNA'|'ncRNA'|'dsEER'|'dsRIP' 表示具体模块
-  const [activeModule, setActiveModule] = useState(null);
+  const [activeModule, setActiveModule] = useState<'mRNA' | 'ncRNA' | 'dsEER' | 'dsRIP' | null>(null);
 
   // 模块数据配置
   const modules = [
@@ -39,7 +38,7 @@ export default function Home() {
       description: 'Differential dsRNA landscape including dsEER and dsRIP',
       image: '/figures/dsRNA.jpg'
     }
-  ];
+  ] as const;;
 
   return (
     <Layout>
