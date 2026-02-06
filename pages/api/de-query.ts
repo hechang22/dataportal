@@ -1,15 +1,65 @@
-import { promises as fs } from 'fs';
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { Readable } from "stream";
+import fs from 'fs';
 import path from 'path';
 
-let dsRNA_Anno_Cache: any[] = [];
+// --- 关键优化：在 handler 外部定义缓存变量 ---
+// 这样当 Vercel 函数处于“热启动”状态时，不需要重新读取 8MB 的文件
+let cachedAnnoMap: Map<string, string[]> | null = null;
+
+const s3 = new S3Client({
+  region: "auto",
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+});
+
+// 辅助函数：将 R2 流转字符串
+async function streamToString(stream: Readable): Promise<string> {
+  const chunks: any[] = [];
+  return new Promise((resolve, reject) => {
+    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on("error", (err) => reject(err));
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  });
+}
+
+// 辅助函数：读取并解析本地 Anno 文件
+function getAnnoMap() {
+  if (cachedAnnoMap) return cachedAnnoMap;
+
+  console.log("Loading Anno file from local storage...");
+  const annoPath = path.join(process.cwd(), 'public', 'dsRNA_anno_35257.txt');
+  const content = fs.readFileSync(annoPath, 'utf8');
+  const lines = content.split('\n');
+  const headers = lines[0].split('\t');
+  const v4Idx = headers.indexOf('V4');
+  const symIdx = headers.indexOf('SYMBOL');
+
+  const map = new Map<string, string[]>();
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split('\t');
+    if (cols.length > Math.max(v4Idx, symIdx)) {
+      const sym = cols[symIdx].trim().toUpperCase();
+      const id = cols[v4Idx].trim();
+      if (!map.has(sym)) {
+        map.set(sym, []);
+      }
+      map.get(sym)?.push(id);
+    }
+  }
+
+  cachedAnnoMap = map;
+  return map;
+}
 
 export default async function handler(req: any, res: any) {
-  // 1. 统一参数名：使用 symbol 对应前端的 symbol
-  const { type, cellType, symbol, limit = 100 } = req.query; 
+  const { type, cellType, symbol, limit = 100 } = req.query;
 
   try {
-    const cleanQuery = symbol ? symbol.trim().toUpperCase() : "";
-    
     const dirMap: Record<string, string> = {
       dsEER: 'dsEER_Differential',
       dsRIP: 'dsRIP_Differential',
@@ -17,75 +67,70 @@ export default async function handler(req: any, res: any) {
       mRNA: 'mRNA_Differential'
     };
 
-    const filePath = path.join(process.cwd(), 'public', dirMap[type], `${cellType}.txt`);
-    const deContent = await fs.readFile(filePath, 'utf-8');
-    const deLines = deContent.split('\n').filter(l => l.trim() !== "");
+    const key = `${dirMap[type]}/${cellType}.txt`;
+
+    // 1. 从 R2 下载对应的差异分析结果文件 (这部分保持不变)
+    const command = new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: key,
+    });
+    const response = await s3.send(command);
+    const content = await streamToString(response.Body as Readable);
+    const deLines = content.split('\n').filter(l => l.trim() !== "");
     const deDataRaw = deLines.slice(1);
 
+    const cleanQuery = symbol ? symbol.trim().toUpperCase() : "";
     let finalResults = [];
 
-    // --- 分支 A: dsRNA (dsEER / dsRIP) ---
-    if (type === 'dsEER' || type === 'dsRIP') {
-      if (dsRNA_Anno_Cache.length === 0) {
-        const annoPath = path.join(process.cwd(), 'public', 'dsRNA_anno_35257.txt');
-        const annoContent = await fs.readFile(annoPath, 'utf-8');
-        const annoLines = annoContent.split('\n');
-        const headers = annoLines[0].split('\t');
-        const v4Idx = headers.indexOf('V4');
-        const symIdx = headers.indexOf('SYMBOL');
-        dsRNA_Anno_Cache = annoLines.slice(1).map(line => {
-          const cols = line.split('\t');
-          return { id: cols[v4Idx], symbol: cols[symIdx]?.trim().toUpperCase() };
-        });
-      }
-
+    // --- 分支 A: mRNA / ncRNA 逻辑 ---
+    if (!type.startsWith('ds')) {
       if (cleanQuery !== "") {
-        // 【核心逻辑】有搜索词：只匹配 ID，不看 p-value（展示非显著结果）
-        const targetIds = new Set(
-          dsRNA_Anno_Cache.filter(item => item.symbol === cleanQuery).map(item => item.id)
-        );
-        finalResults = deDataRaw.filter(line => targetIds.has(line.split('\t')[0]));
+        finalResults = deDataRaw.filter(line => {
+          const cols = line.split('\t');
+          return cols[1]?.toUpperCase() === cleanQuery || cols[2]?.toUpperCase() === cleanQuery;
+        });
       } else {
-        // 【核心逻辑】搜索词为空：筛选 p-value < 0.05
+        finalResults = deDataRaw.filter(line => parseFloat(line.split('\t')[6]) < 0.05);
+      }
+      const formatted = finalResults.slice(0, Number(limit)).map(line => {
+        const cols = line.split('\t');
+        return { id: cols[2], ensg: cols[1], log2FC: cols[3], pvalue: cols[5], padj: cols[6], baseMean: cols[7] };
+      });
+      
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      return res.status(200).json(formatted);
+    } 
+    
+    // --- 分支 B: dsRNA 逻辑 (使用本地 Anno) ---
+    else {
+      if (cleanQuery !== "") {
+        // 使用本地缓存的 Map 进行 O(1) 级别的查询，速度极快
+        const annoMap = getAnnoMap();
+        const targetIds = annoMap.get(cleanQuery) || [];
+        
+        finalResults = deDataRaw.filter(line => {
+            const id = line.split('\t')[0];
+            return targetIds.includes(id);
+        });
+      } else {
+        // 如果没有搜索词，直接按 p-value < 0.05 过滤 DE 文件，完全不涉及 Anno
         finalResults = deDataRaw.filter(line => {
           const pval = parseFloat(line.split('\t')[3]);
           return !isNaN(pval) && pval < 0.05;
         });
       }
 
-      return res.status(200).json(finalResults.slice(0, Number(limit)).map(line => {
+      const formatted = finalResults.slice(0, Number(limit)).map(line => {
         const cols = line.split('\t');
-        return { id: cols[0], log2FC: cols[1], logCPM: cols[2], pvalue: cols[3], baseMean: cols[5], padj: null };
-      }));
-    } 
+        return { id: cols[0], log2FC: cols[1], pvalue: cols[3], baseMean: cols[5], padj: null };
+      });
 
-    // --- 分支 B: ncRNA / mRNA ---
-    else {
-      if (cleanQuery !== "") {
-        // 【核心逻辑】有搜索词：匹配 ENSG_ID (cols[1]) 或 Symbol (cols[2])，不看 padj（展示非显著结果）
-        finalResults = deDataRaw.filter(line => {
-          const cols = line.split('\t');
-          const ensg = cols[1]?.trim().toUpperCase();
-          const sym = cols[2]?.trim().toUpperCase();
-          return (ensg === cleanQuery || sym === cleanQuery);
-        });
-      } else {
-        // 【核心逻辑】搜索词为空：筛选 padj < 0.05
-        finalResults = deDataRaw.filter(line => {
-          const cols = line.split('\t');
-          const padj = parseFloat(cols[6]);
-          return !isNaN(padj) && padj < 0.05;
-        });
-      }
-
-      return res.status(200).json(finalResults.slice(0, Number(limit)).map(line => {
-        const cols = line.split('\t');
-        return { id: cols[2], ensg: cols[1], log2FC: cols[3], logCPM: cols[4], pvalue: cols[5], padj: cols[6], baseMean: cols[7] };
-      }));
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+      return res.status(200).json(formatted);
     }
 
-  } catch (error) {
-    console.error("Backend Error:", error);
-    return res.status(200).json([]);
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ error: error.message });
   }
 }

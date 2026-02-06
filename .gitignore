@@ -33,3 +33,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 忽略所有差异分析数据文件夹（因为它们已经在 R2 上了）
+public/mRNA_Differential/
+public/ncRNA_Differential/
+public/dsEER_Differential/
+public/dsRIP_Differential/
+
+# 忽略数据库备份（如果有的话）
+*.db
+*.sqlite
+
+# 排除 DS_Store 等系统文件
+.DS_Store
