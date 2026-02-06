@@ -5,247 +5,101 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { NextSeo } from 'next-seo';
 import Layout from '@/components/Layout';
-import { FlatUiTable } from '@portaljs/components';
-import ToggleContent from '@/components/ToggleContent';
-import SelectiveContent from '@/components/SelectiveContent';
+
 import { ChartPieIcon, TableCellsIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { text } from 'stream/consumers';
-import DSrnaSearch from '@/components/DSrnaSearch';
+import UniversalDESearch from '@/components/UniversalDESearch';
+import ModuleCard  from '@/components/ModuleCard';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export interface Article {
-  date: string;
-  title: string;
-  url: string;
-}
+export default function Home() {
 
-export interface Dataset {
-  url: string;
-  name: string;
-  displayName: string;
-  articles: Article[];
-  files?: string[];
-}
+  // 状态：null 表示首页卡片流，'mRNA'|'ncRNA'|'dsEER'|'dsRIP' 表示具体模块
+  const [activeModule, setActiveModule] = useState(null);
 
-// Request a weekday along with a long date
-const options = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-} as const;
+  // 模块数据配置
+  const modules = [
+    {
+      id: 'mRNA',
+      title: 'mRNA',
+      description: 'Explore differential analysis on protein-coding RNAs.',
+      image: '/figures/mRNA.png' // 替换为你实际的图片路径
+    },
+    {
+      id: 'ncRNA',
+      title: 'ncRNA',
+      description: 'Investigate non-coding RNA variations.',
+      image: '/figures/ncRNA.png'
+    },
+    {
+      id: 'dsEER', // 这里可以先做一个 dsRNA 的入口，内部再选 dsEER/dsRIP
+      title: 'dsRNA',
+      description: 'Differential dsRNA landscape including dsEER and dsRIP',
+      image: '/figures/dsRNA.jpg'
+    }
+  ];
 
-export function MobileItem({ dataset }: { dataset: Dataset }) {
   return (
-    <div className="flex gap-x-2 pb-2 py-4 items-center justify-between border-b border-zinc-600">
-      <div className="flex flex-col">
-        <span className="font-mono font-light">{dataset.name}</span>
-        {dataset.articles.map((article) => (
-          <div key={article.title} className="py-1 flex flex-col">
-            <span className="font-bold hover:underline">{article.title}</span>
-            <span className="font-light text-base">
-              {format(article.date).includes('years')
-                ? new Date(article.date).toLocaleString('en-US', options)
-                : format(article.date)}
-            </span>{' '}
-          </div>
-        ))}
-      </div>
-      <div className="flex flex-col justify-start">
-        <a
-          className="ml-2 border border-zinc-900 font-light px-4 py-1 text-sm transition hover:bg-zinc-900 hover:text-white"
-          href={dataset.url}
-        >
-          info
-        </a>
-        <a
-          className="ml-2 border border-[#3c3c3c] px-[25px] py-2.5 text-sm transition bg-[#3c3c3c] text-white hover:bg-zinc-900"
-          href={`/datasets/${dataset.name}`}
-        >
-          explore
-        </a>
-      </div>
-    </div>
-  );
-}
-
-export function DesktopItem({ dataset }: { dataset: Dataset }) {
-  return (
-    <>
-      {dataset.articles.map((article, index) => (
-        <tr
-          key={article.url}
-          className={`${
-            index === dataset.articles.length - 1 ? 'border-b' : ''
-          } border-zinc-400`}
-        >
-          <td className="py-8 font-light font-mono text-[13px] text-zinc-700">
-            {index === 0 ? dataset.name : ''}
-          </td>
-          <td>
-            <a
-              className="py-8 font-bold hover:underline pr-2"
-              href={article.url}
-            >
-              {article.title}
-            </a>
-          </td>
-          <td className="py-8 font-light text-[14px] min-w-[138px] font-mono text-[#999]">
-            {format(article.date).includes('years')
-              ? new Date(article.date).toLocaleString('en-US', options)
-              : format(article.date)}
-          </td>
-          <td>
-            {index === 0 && (
-            <a
-              className="ml-2 border border-[#3c3c3c] px-[25px] py-2.5 text-sm transition bg-[#3c3c3c] text-white hover:bg-zinc-900"
-              href={`/datasets/${dataset.name}`}
-            >
-              explore
-            </a>
-            )}
-          </td>
-          <td className="py-8">
-            {index === 0 && (
-              <a
-                className="ml-2 border border-zinc-900 font-light px-[25px] py-2.5 text-sm transition hover:bg-zinc-900 hover:text-white"
-                href={dataset.url}
-              >
-                info
-              </a>
-            )}
-          </td>
-        </tr>
-      ))}
-    </>
-  );
-}
-
-export async function getStaticProps() {
-  const jsonDirectory = path.join(process.cwd(), '/datasets.json');
-  const datasetString = await fs.readFile(jsonDirectory, 'utf8');
-  const datasets = JSON.parse(datasetString);
-  return {
-    props: { datasets },
-  };
-}
-
-export default function Home({ datasets }: { datasets: Dataset[] }) {
-  return (
-    <>
-      <NextSeo title="Data Portal for SLE" />
-      <Layout>
+    <Layout>
       <main
         className={`flex min-h-screen flex-col items-center max-w-5xl mx-auto pt-20 px-2.5 ${inter.className}`}
       >
-        <div>
+      
+      <div>
           <h1 className="text-[23px] font-bold text-zinc-800 text-center">
-            Cell-specific dsRNAome landscape for systemic lupus erythematosus
+            Cell-specific RNA landscape for systemic lupus erythematosus
           </h1>
           <p className="max-w-[1000px] text-[18px] text-center text-[#6d6f71]">
             Total RNA sequencing of 30 cellular and extracellular components of blood in systemic lupus erythematosus.
           </p>
-        </div>
-          
-{/*       
-        <br/><br/>  
-        <br/><br/>  
-        <img
-          width="700"
-          height="700"
-          alt="summary"
-          src="figure1.jpg"
-        />{' '}  
-*/}
-
-<ToggleContent
-  items={[
-    {
-    text: 'Sample Info', 
-    content: 
-    <div className="prose max-w-none"> 
-      <FlatUiTable url={"sample_info_oct21.csv"} /> 
-    </div>
-    },
-    {
-    text: 'Cellular Metadata', 
-    content: 
-    <div className="space-y-4">
-      <div className="max-w-4xl mx-auto">
-        <SelectiveContent
-          options={[
-            {
-              value: 'total',
-              label: 'Total-RNA-seq',
-              content: <FlatUiTable url={"Anno_2025_Cell_3018_oct21.csv"} />
-            },
-            {
-              value: 'm6A',
-              label: 'm6A-seq',
-              content: <FlatUiTable url={"Anno_2025_Discovery_m6Aseq_forSLEportal.csv"} />
-            },
-            {
-              value: 'dsRIP',
-              label: 'dsRIP',
-              content: <FlatUiTable url={"Anno_2025_Discovery_dsRIP_forSLEportal_2.csv"} />
-            }
-          ]}
-          buttonClassName="w-full bg-gray-100 hover:bg-gray-200 rounded-lg py-2 px-4"
-          contentClassName="mt-4"
-        />
       </div>
-    </div>
-  },
-  {
-  text: 'Cell-free Metadata',
-  content: 
-  <div className="prose max-w-none"> 
-    <FlatUiTable url={"Anno_2025_Cellfree_419_oct21.csv"} /> 
-  </div>
-  }
-  ]}
-/>  
 
-<ToggleContent
-  items={[
-    {
-      text: 'dsRNA Analysis', // 新增的 dsRNA 模块
-      content: <DSrnaSearch />
-    },
-    {
-      text: 'Sample Info', 
-      content: <div className="prose max-w-none"><FlatUiTable url={"sample_info_oct21.csv"} /></div>
-    },
-  ]}
-/>
+      <br/><br/>
 
-        {/* <p className="text-[13px] py-8">
-          Unless otherwise noted, our data sets are available under the{' '}
-          <a
-            className="text-blue-400 hover:underline"
-            href="http://creativecommons.org/licenses/by/4.0/"
-          >
-            Creative Commons Attribution 4.0 International license
-          </a>
-          , and the code is available under the{' '}
-          <a
-            className="text-blue-400 hover:underline"
-            href="http://opensource.org/licenses/MIT"
-          >
-            MIT license
-          </a>
-          . If you find this information useful, please{' '}
-          <a
-            className="text-blue-400 hover:underline"
-            href="mailto:data@fivethirtyeight.com"
-          >
-            let us know
-          </a>
-          .
-          </p>   */}
+        {/* 如果没有选中模块，显示卡片网格 */}
+        {!activeModule ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+            {modules.map(mod => (
+              <ModuleCard 
+                key={mod.id}
+                title={mod.title}
+                description={mod.description}
+                image={mod.image}
+                onExplore={() => setActiveModule(mod.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          /* 如果选中了模块，显示对应的查询组件，并带有一个“返回”按钮 */
+          <div className="space-y-6">
+            <button 
+              onClick={() => setActiveModule(null)}
+              className="flex items-center text-[#005682] hover:underline font-medium"
+            >
+              ← Back to Analysis Modules
+            </button>
+            
+            {/* 根据选择渲染查询组件 */}
+            {activeModule === 'dsEER' ? (
+               <div className="space-y-4">
+                  {/* 这里可以再放一个小切换，或者直接分两个组件 */}
+                  <UniversalDESearch type="dsEER" title="dsRNA (dsEER) Analysis" />
+                  <div className="mt-8">
+                    <UniversalDESearch type="dsRIP" title="dsRNA (dsRIP) Analysis" />
+                  </div>
+               </div>
+            ) : (
+              <UniversalDESearch 
+                type={activeModule} 
+                title={`${activeModule} Differential Expression`} 
+              />
+            )}
+          </div>
+        )}
+
       </main>
-      </Layout>
-    </>
+    </Layout>
   );
 }
