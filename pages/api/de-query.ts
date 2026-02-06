@@ -7,14 +7,25 @@ import path from 'path';
 // 这样当 Vercel 函数处于“热启动”状态时，不需要重新读取 8MB 的文件
 let cachedAnnoMap: Map<string, string[]> | null = null;
 
-const s3 = new S3Client({
-  region: "auto",
-  endpoint: process.env.R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-});
+// 建议将 Client 放在 Handler 外部，但要确保它能捕获到变量
+const getS3Client = () => {
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+  const endpoint = process.env.R2_ENDPOINT;
+
+  if (!accessKeyId || !secretAccessKey || !endpoint) {
+    throw new Error(`Missing R2 credentials: ID=${!!accessKeyId}, Secret=${!!secretAccessKey}, End=${!!endpoint}`);
+  }
+
+  return new S3Client({
+    region: "auto", // R2 必须是 auto
+    endpoint: endpoint,
+    credentials: {
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+    },
+  });
+};
 
 // 辅助函数：将 R2 流转字符串
 async function streamToString(stream: Readable): Promise<string> {
@@ -68,6 +79,7 @@ export default async function handler(req: any, res: any) {
     };
 
     const key = `${dirMap[type]}/${cellType}.txt`;
+    const s3 = getS3Client();
 
     // 1. 从 R2 下载对应的差异分析结果文件 (这部分保持不变)
     const command = new GetObjectCommand({
