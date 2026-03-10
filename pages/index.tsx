@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { text } from 'stream/consumers';
 import UniversalDESearch from '@/components/UniversalDESearch';
 import ModuleCard  from '@/components/ModuleCard';
+import DownloadMatrix from '@/components/DownloadMatrix';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -97,6 +98,8 @@ export default function Home() {
             )}
           </div>
         )}
+      
+      <DownloadMatrix />
 
       </main>
     </Layout>

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.984.0",
+    "@aws-sdk/s3-request-presigner": "^3.1005.0",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.18",
     "@portaljs/components": "^0.1.12",
