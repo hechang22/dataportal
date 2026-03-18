@@ -1,53 +1,43 @@
-import { useState } from 'react';
+// components/DownloadMatrix.tsx
 
 export default function DownloadMatrix() {
-  const [loading, setLoading] = useState<string | null>(null);
+  // 在这里替换为你真实的网盘分享链接
+  const DOWNLOAD_LINKS = {
+    cohort1: "https://cloud.tsinghua.edu.cn/f/cf0b383b6c25425bb898/?dl=1", 
+    cohort2: "https://cloud.tsinghua.edu.cn/f/56b586e73f9b4f46b220/?dl=1",     
+  };
 
-  const downloadFile = async (fileName: string) => {
-    setLoading(fileName);
-    try {
-      // 1. 请求后端获取临时下载链接
-      const res = await fetch(`/api/get-download-url?fileName=${fileName}`);
-      const { url, error } = await res.json();
-
-      if (error) throw new Error(error);
-
-      // 2. 模拟点击进行下载
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName; // 提示浏览器下载
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch (err) {
-      alert("Download failed: " + err);
-    } finally {
-      setLoading(null);
-    }
+  const handleRedirect = (url: string) => {
+    // 在新窗口打开网盘页面
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className="bg-white border-2 border-dashed border-zinc-200 rounded-xl p-8 text-center my-6">
       <h3 className="text-lg font-bold text-zinc-800 mb-2">Download Expression Matrices</h3>
       <p className="text-sm text-gray-500 mb-6">
-        Full normalized expression data across all SLE and HD samples.
+        Full normalized expression data available via tsinghua cloud. 
       </p>
       
       <div className="flex justify-center gap-6">
         <button
-          onClick={() => downloadFile('gencode_Discovery_TPM_3021.txt')}
-          disabled={loading !== null}
-          className="flex items-center gap-2 bg-[#005682] text-white px-6 py-3 rounded-lg hover:bg-[#004466] transition-all disabled:opacity-50"
+          onClick={() => handleRedirect(DOWNLOAD_LINKS.cohort1)}
+          className="flex items-center gap-2 bg-[#005682] text-white px-8 py-3 rounded-lg hover:bg-[#004466] transition-all font-bold shadow-sm"
         >
-          {loading === 'gencode_Discovery_TPM_3021.txt' ? 'Preparing...' : 'Discovery Cohort'}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="text-M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Cohort 1
         </button>
 
         <button
-          onClick={() => downloadFile('gencode_Validation_TPM_416.txt')}
-          disabled={loading !== null}
-          className="flex items-center gap-2 bg-[#005682] text-white px-6 py-3 rounded-lg hover:bg-[#004466] transition-all disabled:opacity-50"
+          onClick={() => handleRedirect(DOWNLOAD_LINKS.cohort2)}
+          className="flex items-center gap-2 bg-[#005682] text-white px-8 py-3 rounded-lg hover:bg-[#004466] transition-all font-bold shadow-sm"
         >
-          {loading === 'gencode_Validation_TPM_416.txt' ? 'Preparing...' : 'Validation Cohort'}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Cohort 2
         </button>
       </div>
     </div>
