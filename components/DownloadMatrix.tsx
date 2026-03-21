@@ -3,7 +3,7 @@
 export default function DownloadMatrix() {
   // 在这里替换为你真实的网盘分享链接
   const DOWNLOAD_LINKS = {
-    link: "https://cloud.tsinghua.edu.cn/f/cf0b383b6c25425bb898/"    
+    link: "https://cloud.tsinghua.edu.cn/d/b9dbe96acbf74f088a6d/"  
   };
 
   const handleRedirect = (url: string) => {
